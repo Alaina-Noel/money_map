@@ -37,7 +37,7 @@ Ensure you have the following installed:
 1. composer install
 1. cp .env.example .env
 1. php artisan key:generate
-1. set your .env databse variables
+1. set your .env database variables
 1. php artisan migrate
 1. php artisan serve
 1. Visit http://localhost:8000 in your browser.
