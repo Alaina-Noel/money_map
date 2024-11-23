@@ -1,0 +1,29 @@
+### Login
+POST http://localhost:8000/api/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}"
+}
+
+> {%
+    client.global.set("auth", response.body.access_token);
+%}
+
+### Refresh Token
+POST http://localhost:8000/api/refresh
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json
+
+> {%
+    client.global.set("auth", response.body.access_token);
+%}
+
+### Logout
+POST http://localhost:8000/api/logout
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json

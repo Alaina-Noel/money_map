@@ -1,0 +1,46 @@
+### Get all categories for all months
+GET http://localhost:8000/api/categories
+Authorization: Bearer {{auth}}
+
+### Get categories for current month
+GET http://localhost:8000/api/categories/current
+Authorization: Bearer {{auth}}
+
+### Get categories for specific month
+GET http://localhost:8000/api/categories/2024-03
+Authorization: Bearer {{auth}}
+
+### Get categories for specific month
+GET http://localhost:8000/api/categories?budget_month=2024-03-01
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json
+
+### Create new category
+POST http://localhost:8000/api/categories
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "New Category",
+    "expected": 500.00,
+    "budget_month": "2024-03-01"
+}
+
+### Update category
+PUT http://localhost:8000/api/categories/1
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "Updated Category",
+    "expected": 600.00
+}
+
+### Delete category
+DELETE http://localhost:8000/api/categories/1
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json
