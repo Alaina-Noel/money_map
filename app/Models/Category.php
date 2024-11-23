@@ -17,6 +17,7 @@ class Category extends Model
         'name',
         'expected',
         'actual',
+        'budget_month',
     ];
 
     /**
