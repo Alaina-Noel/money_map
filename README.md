@@ -43,3 +43,13 @@ Ensure you have the following installed:
 1. Visit http://localhost:8000 in your browser.
 
 
+# Reset the database and run all migrations
+php artisan migrate:fresh
+
+# Create your user account
+php artisan app:create-user <first name> <username> <password>
+
+# Seed the database with sample data
+php artisan db:seed
+
+

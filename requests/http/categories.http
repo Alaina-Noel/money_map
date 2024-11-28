@@ -7,14 +7,8 @@ GET http://localhost:8000/api/categories/current
 Authorization: Bearer {{auth}}
 
 ### Get categories for specific month
-GET http://localhost:8000/api/categories/2024-03
+GET http://localhost:8000/api/categories/2024-11
 Authorization: Bearer {{auth}}
-
-### Get categories for specific month
-GET http://localhost:8000/api/categories?budget_month=2024-03-01
-Authorization: Bearer {{auth}}
-Content-Type: application/json
-Accept: application/json
 
 ### Create new category
 POST http://localhost:8000/api/categories
@@ -41,6 +35,29 @@ Accept: application/json
 
 ### Delete category
 DELETE http://localhost:8000/api/categories/1
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json
+
+### Income
+GET http://localhost:8000/api/budgets/2024-11/paychecks
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json
+
+### Create income for a month
+POST http://localhost:8000/api/income
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json
+
+{
+    "budget_month": "2024-11",
+    "expected_income": 2000
+}
+
+### dashboard
+GET http://localhost:8000/api/budgets/2024-11/dashboard
 Authorization: Bearer {{auth}}
 Content-Type: application/json
 Accept: application/json

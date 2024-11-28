@@ -15,7 +15,6 @@ class CategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
             'expected' => 'required|numeric|min:0',
             'actual' => 'nullable|numeric|min:0',
             'budget_month' => 'required|date_format:Y-m-d',

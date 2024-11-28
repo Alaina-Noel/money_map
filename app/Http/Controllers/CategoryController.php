@@ -9,25 +9,13 @@ use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(string $month): JsonResponse
     {
-        $query = Category::query()
-            ->where('user_id', auth()->id());
-
-        if (request('month')) {
-            $query->where('budget_month', request('month'));
-        }
-
-        $categories = $query
+        $categories = Category::where('user_id', auth()->id())
+            ->where('budget_month', 'LIKE', $month . '%')
             ->with('lineItems')
-            ->orderBy('budget_month', 'desc')
             ->orderBy('name')
             ->get();
-
-        // Group by month if no specific month requested
-        if (!request('month')) {
-            $categories = $categories->groupBy('budget_month');
-        }
 
         return response()->json($categories);
     }
@@ -133,9 +121,6 @@ class CategoryController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Category $category): JsonResponse
     {
         if ($category->user_id !== auth()->id()) {
@@ -145,7 +130,7 @@ class CategoryController extends Controller
         try {
             DB::beginTransaction();
 
-            // This will also delete related line items if you've set up cascade deletes
+            // Delete the category and related data if cascade delete is enabled
             $category->delete();
 
             DB::commit();
@@ -162,4 +147,5 @@ class CategoryController extends Controller
             ], 500);
         }
     }
+
 }

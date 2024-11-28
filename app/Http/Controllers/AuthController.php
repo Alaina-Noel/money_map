@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -30,6 +33,43 @@ class AuthController extends Controller
         ]);
     }
 
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            $token = $user->createToken('auth-token')->plainTextToken;
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Registration successful',
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user' => $user
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Registration failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -42,11 +82,22 @@ class AuthController extends Controller
     public function refresh(Request $request)
     {
         $user = $request->user();
-        $user->tokens()->delete();
+
+        // Retrieve the user's latest token
+        $latestToken = $user->tokens()->latest('created_at')->first();
+
+        if ($latestToken) {
+            // Delete the latest token (invalidate it)
+            $latestToken->delete();
+        }
+
+        // Create and issue a new token
+        $newToken = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
-            'access_token' => $user->createToken('auth-token')->plainTextToken,
+            'access_token' => $newToken,
             'token_type' => 'Bearer',
         ]);
     }
+
 }
