@@ -27,12 +27,10 @@ class CreateUser extends Command
      */
     public function handle()
     {
-        // Retrieve arguments
         $username = $this->argument('username');
         $password = $this->argument('password');
         $email = $this->argument('email');
 
-        // Create a new user
         $user = User::create([
             'name' => $username,
             'email' => $email,

@@ -84,7 +84,6 @@ class AuthController extends Controller
     {
         $user = $request->user();
 
-        // Retrieve the user's latest token
         $latestToken = $user->tokens()->latest('created_at')->first();
 
         if ($latestToken) {
@@ -92,7 +91,6 @@ class AuthController extends Controller
             $latestToken->delete();
         }
 
-        // Create and issue a new token
         $newToken = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([

@@ -52,7 +52,6 @@ class Category extends Model
         return $this->hasMany(LineItem::class);
     }
 
-    // Computed properties
     public function getSpendingPercentageAttribute(): float
     {
         return $this->expected_amount > 0

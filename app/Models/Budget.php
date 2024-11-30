@@ -64,7 +64,6 @@ class Budget extends Model
             ->whereYear('pay_date', Carbon::parse($this->budget_month)->year);
     }
 
-    // Computed Properties
     public function getTotalExpectedIncomeAttribute(): float
     {
         return $this->paychecks->sum('amount') ?? 0.0;

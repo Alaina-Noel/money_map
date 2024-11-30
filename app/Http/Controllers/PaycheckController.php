@@ -55,6 +55,4 @@ class PaycheckController extends Controller
             ], 500);
         }
     }
-
-    // Add update and destroy methods similarly...
 }
