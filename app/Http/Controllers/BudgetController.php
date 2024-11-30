@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Budget\CopyPreviousMonthRequest;
 use App\Models\Budget;
 use App\Models\Category;
 use App\Http\Requests\Budget\CreateBudgetRequest;
@@ -38,10 +39,11 @@ class BudgetController extends Controller
         $user = auth()->user();
         $currentDate = Carbon::parse($month);
 
-        $budget = Budget::where('user_id', $user->id)
+        $budget_query = Budget::where('user_id', $user->id)
             ->whereDate('budget_month', $currentDate->format('Y-m-d'))
-            ->with(['relatedCategories', 'relatedCategories.lineItems'])
-            ->firstOrFail();
+            ->with(['relatedCategories', 'relatedCategories.lineItems']);
+
+        $budget = $budget_query->first();
 
         $currentMonthPaychecks = Paycheck::where('user_id', $user->id)
             ->whereYear('pay_date', $currentDate->year)
@@ -49,6 +51,20 @@ class BudgetController extends Controller
             ->get();
 
         $currentMonthIncome = $currentMonthPaychecks->sum('amount');
+
+        if (empty($budget)) {
+            return response()->json([
+                'current_month' => [
+                    'expected_income' => $currentMonthIncome,
+                    'actual_income' => $currentMonthIncome,
+                    'total_budgeted' => 0,
+                    'total_spent' => 0,
+                    'remaining_budget' => $currentMonthIncome,
+                ],
+                'spending_by_category' => [],
+            ]);
+        }
+
         $currentMonthSpending = $budget->relatedCategories()->get()->sum('actual_amount');
         $currentMonthBudgeted = $budget->relatedCategories()->get()->sum('expected_amount');
 
@@ -69,6 +85,37 @@ class BudgetController extends Controller
                     ($category->actual_amount / $category->expected_amount) * 100 : 0,
             ]),
         ]);
+    }
+
+    /**
+     * @param CopyPreviousMonthRequest $request
+     * @param string                   $month
+     * @return JsonResponse
+     */
+    public function copyPreviousMonth(CopyPreviousMonthRequest $request, string $month): JsonResponse
+    {
+        try {
+            $user = auth()->user();
+            $targetMonth = Carbon::parse($month);
+
+            $budget = Budget::firstOrCreate([
+                'user_id' => $user->id,
+                'budget_month' => $targetMonth->format('Y-m-d'),
+            ]);
+
+            $newCategories = $budget->copyPreviousMonthCategories($targetMonth);
+
+            return response()->json([
+                'message' => 'Categories copied successfully',
+                'categories' => $newCategories
+            ]);
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Failed to copy categories',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function store(CreateBudgetRequest $request): JsonResponse

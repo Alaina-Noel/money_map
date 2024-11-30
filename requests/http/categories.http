@@ -56,8 +56,26 @@ Accept: application/json
     "expected_income": 2000
 }
 
-### dashboard
+### november dashboard
 GET http://localhost:8000/api/budgets/2024-11/dashboard
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json
+
+### december dashboard
+GET http://localhost:8000/api/budgets/2024-02/dashboard
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json
+
+### copy previous months budget categories
+POST http://localhost:8000/api/budgets/2025-02/copy-previous
+Authorization: Bearer {{auth}}
+Content-Type: application/json
+Accept: application/json
+
+### dashboard
+DELETE http://localhost:8000/api/line-items/10
 Authorization: Bearer {{auth}}
 Content-Type: application/json
 Accept: application/json

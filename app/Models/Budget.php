@@ -91,4 +91,34 @@ class Budget extends Model
     {
         return $this->total_expected_income - $this->total_actual_spending;
     }
+
+    public function copyPreviousMonthCategories(Carbon $targetMonth): Collection
+    {
+        $previousMonth = Carbon::parse($targetMonth)->subMonth();
+
+        $targetBudget = Budget::firstOrCreate([
+            'user_id' => $this->user_id,
+            'budget_month' => $targetMonth->format('Y-m-d'),
+        ]);
+
+        // Find previous month's categories
+        $previousCategories = Category::where('user_id', $this->user_id)
+            ->whereYear('budget_month', $previousMonth->year)
+            ->whereMonth('budget_month', $previousMonth->month)
+            ->get();
+
+        // Create new categories for current month
+        $newCategories = $previousCategories->map(function ($category) use ($targetMonth) {
+            return Category::create([
+                'user_id' => $this->user_id,
+                'budget_month' => $targetMonth->format('Y-m-d'),
+                'name' => $category->name,
+                'expected_amount' => $category->expected_amount,
+                'actual_amount' => 0,
+                'notes' => null
+            ]);
+        });
+
+        return $newCategories;
+    }
 }

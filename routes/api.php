@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('budgets', [BudgetController::class, 'store']);
     Route::get('budgets/{month}/dashboard', [BudgetController::class, 'getDashboardSummary'])
         ->where('month', '\d{4}-\d{2}');
+    Route::post('budgets/{month}/copy-previous', [BudgetController::class, 'copyPreviousMonth'])
+        ->where('month', '\d{4}-\d{2}');
 
     // Category routes
     Route::get('budgets/{month}/categories', [CategoryController::class, 'index'])

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\LineItem;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -63,7 +64,7 @@ class LineItemController extends Controller
                 'category' => $category->fresh()
             ], 201);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Failed to create line item',
@@ -72,5 +73,12 @@ class LineItemController extends Controller
         }
     }
 
-    // Add update and destroy methods similarly...
+    public function destroy(LineItem $lineItem): JsonResponse
+    {
+        $lineItem->delete();
+        return response()->json([
+            'message' => 'Line item deleted successfully',
+        ], 201); //todo: find correct status code
+    }
+
 }
