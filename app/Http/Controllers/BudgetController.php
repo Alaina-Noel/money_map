@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\DB;
 
 class BudgetController extends Controller
 {
+    /**
+     * @return JsonResponse
+     */
     public function index(): JsonResponse
     {
         $budgets = Budget::where('user_id', auth()->id())
@@ -24,6 +27,10 @@ class BudgetController extends Controller
         return response()->json($budgets);
     }
 
+    /**
+     * @param string $month
+     * @return JsonResponse
+     */
     public function show(string $month): JsonResponse
     {
         $budget = Budget::where('user_id', auth()->id())
@@ -34,6 +41,10 @@ class BudgetController extends Controller
         return response()->json($budget);
     }
 
+    /**
+     * @param string $month
+     * @return JsonResponse
+     */
     public function getDashboardSummary(string $month): JsonResponse
     {
         $user = auth()->user();
@@ -118,6 +129,10 @@ class BudgetController extends Controller
         }
     }
 
+    /**
+     * @param CreateBudgetRequest $request
+     * @return JsonResponse
+     */
     public function store(CreateBudgetRequest $request): JsonResponse
     {
         try {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -61,7 +62,7 @@ class AuthController extends Controller
                 'user' => $user
             ], 201);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Registration failed',
@@ -87,7 +88,7 @@ class AuthController extends Controller
         $latestToken = $user->tokens()->latest('created_at')->first();
 
         if ($latestToken) {
-            // Delete the latest token (invalidate it)
+            // deleting the latest token invalidates it
             $latestToken->delete();
         }
 

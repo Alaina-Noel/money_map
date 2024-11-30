@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BudgetController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LineItemController;
 use App\Http\Controllers\PaycheckController;
 
@@ -26,14 +25,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ->where('month', '\d{4}-\d{2}');
     Route::post('budgets/{month}/copy-previous', [BudgetController::class, 'copyPreviousMonth'])
         ->where('month', '\d{4}-\d{2}');
-
-    // Category routes
-    Route::get('budgets/{month}/categories', [CategoryController::class, 'index'])
-        ->where('month', '\d{4}-\d{2}');
-    Route::post('categories', [CategoryController::class, 'store']);
-    Route::put('categories/{category}', [CategoryController::class, 'update']);
-    Route::delete('categories/{category}', [CategoryController::class, 'destroy']);
-    Route::get('categories/{category}/metrics', [CategoryController::class, 'getCategoryMetrics']);
 
     // Line Item routes
     Route::get('categories/{category}/line-items', [LineItemController::class, 'index']);
