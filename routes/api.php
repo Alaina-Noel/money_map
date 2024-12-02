@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BudgetController;
@@ -31,6 +32,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('line-items', [LineItemController::class, 'store']);
     Route::put('line-items/{lineItem}', [LineItemController::class, 'update']);
     Route::delete('line-items/{lineItem}', [LineItemController::class, 'destroy']);
+
+    // Category routes
+    Route::delete('categories/{category}', [CategoryController::class, 'destroy']);
+    Route::post('categories', [CategoryController::class, 'store']);
+    Route::put('categories/{category}', [CategoryController::class, 'update']);
+
 
     // Paycheck routes
     Route::get('budgets/{month}/paychecks', [PaycheckController::class, 'index'])

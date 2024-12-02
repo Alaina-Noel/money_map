@@ -76,8 +76,8 @@ class BudgetController extends Controller
             ]);
         }
 
-        $currentMonthSpending = $budget->relatedCategories()->get()->sum('actual_amount');
-        $currentMonthBudgeted = $budget->relatedCategories()->get()->sum('expected_amount');
+        $currentMonthSpending = $budget->relatedCategories->sum('actual_amount');
+        $currentMonthBudgeted = $budget->relatedCategories->sum('expected_amount');
 
         return response()->json([
             'current_month' => [

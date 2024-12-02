@@ -75,10 +75,32 @@ class LineItemController extends Controller
 
     public function destroy(LineItem $lineItem): JsonResponse
     {
-        $lineItem->delete();
-        return response()->json([
-            'message' => 'Line item deleted successfully',
-        ], 201); //todo: find correct status code
+        try {
+            DB::beginTransaction();
+
+            $category = Category::findOrFail($lineItem->category_id);
+
+            if ($category->user_id !== auth()->id()) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+
+            $lineItem->delete();
+
+            $category->actual_amount = $category->lineItems()->sum('amount');
+            $category->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Line item deleted successfully',
+            ], 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to delete line item',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
 }

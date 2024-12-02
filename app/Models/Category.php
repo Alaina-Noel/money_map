@@ -52,6 +52,11 @@ class Category extends Model
         return $this->hasMany(LineItem::class);
     }
 
+    public function budget()
+    {
+        return $this->belongsTo(Budget::class);
+    }
+
     public function getSpendingPercentageAttribute(): float
     {
         return $this->expected_amount > 0

@@ -63,7 +63,7 @@ Content-Type: application/json
 Accept: application/json
 
 ### december dashboard
-GET http://localhost:8000/api/budgets/2024-02/dashboard
+GET http://localhost:8000/api/budgets/2024-12/dashboard
 Authorization: Bearer {{auth}}
 Content-Type: application/json
 Accept: application/json
